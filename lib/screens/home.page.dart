@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_2/screens/login.page.dart'; // Import the LoginPage
+import 'dart:convert'; // for base64 decoding
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +13,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   User? user;
+  String? fullName;
+  String? profilePicture;
 
   @override
   void initState() {
@@ -20,7 +24,31 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         this.user = user;
       });
+      if (user != null) {
+        fetchUserDetails();
+      }
     });
+  }
+
+  // Fetch user details from Firestore
+  Future<void> fetchUserDetails() async {
+    if (user != null) {
+      try {
+        DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get();
+
+        if (snapshot.exists) {
+          setState(() {
+            fullName = snapshot.data()?['fullName'];
+            profilePicture = snapshot.data()?['imageBase64'];
+          });
+        }
+      } catch (e) {
+        print('Error fetching user details: $e');
+      }
+    }
   }
 
   // Function to return a personalized welcome message based on the time of day
@@ -55,18 +83,27 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage("images/avatar.jpeg"),
+                    backgroundImage: profilePicture != null
+                        ? MemoryImage(base64Decode(profilePicture!))
+                        : AssetImage("images/avatar.jpeg"),
                     radius: 40,
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    user?.email ?? "Guest",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
-                  ),
-                  Text(
-                    "Welcome to the app!",
-                    style: TextStyle(color: Colors.black, fontSize: 15),
-                  ),
+                   Text(
+                    "${fullName ?? "Guest"}",
+                     style: TextStyle(
+                       fontSize: 18,
+                        color: Colors.black,
+                        ),
+                    ),
+                     Text(
+                    "${user?.email ?? "No Email"}",
+                     style: TextStyle(
+                       fontSize: 12,
+                        color: Colors.black,
+                        ),
+                    ),
+
                 ],
               ),
             ),
@@ -135,12 +172,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      "You're logged in as: ${user?.email ?? "Guest"}",
-                      style: TextStyle(
-                        fontSize: 18,
+                   Text(
+                    "You're logged in as: ${fullName ?? "Guest"}",
+                     style: TextStyle(
+                       fontSize: 18,
                         color: Colors.white,
-                      ),
+                        ),
                     ),
                   ],
                 ),

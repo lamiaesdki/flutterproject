@@ -5,10 +5,12 @@ import 'package:flutter_application_2/screens/home.page.dart';
 import 'package:flutter_application_2/screens/login.page.dart';
 import 'package:flutter_application_2/screens/register.page.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform, 
+    
   );
   runApp(const MainApp());
 }

@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
           message = "tbh i even dont know whats this";
           break;
         case 'too-many-requests':
-          message = "daddy chill";
+          message = "there are way too many request lol ";
           break;
         default:
           message = "heheh no.try again";
@@ -66,16 +66,16 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
-      print("bro honestly just die: $e");
+      print("nuh uh $e");
     }
   }
 
   String? _valmail(String? value) {
     if (value == null || value.isEmpty) {
-      return "dude are u fr?";
+      return "it s null";
     }
     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return "you're either blind or stupid";
+      return "bro";
     }
     return null;
   }
@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
       return "u really think u gonna enter without a password";
     }
     if (value.length < 6) {
-      return "6 damn characters u dumb";
+      return "6 characters";
     }
     return null;
   }
@@ -183,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.pushNamed(context, "/register");
                 },
                 child: const Text(
-                  'that one click to register if you dont have an account',
+                  ' one click to register if you dont have an account',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
